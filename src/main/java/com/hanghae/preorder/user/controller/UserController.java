@@ -1,8 +1,8 @@
-package com.hanghae.preorder.controller;
+package com.hanghae.preorder.user.controller;
 
-import com.hanghae.preorder.dto.request.UserRequest;
-import com.hanghae.preorder.dto.response.UserResponse;
-import com.hanghae.preorder.service.UserService;
+import com.hanghae.preorder.user.dto.request.UserRequest;
+import com.hanghae.preorder.user.dto.response.UserResponse;
+import com.hanghae.preorder.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

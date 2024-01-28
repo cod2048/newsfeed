@@ -1,13 +1,11 @@
-package com.hanghae.preorder.service;
+package com.hanghae.preorder.user.service;
 
-import com.hanghae.preorder.dto.request.UserRequest;
-import com.hanghae.preorder.dto.response.UserResponse;
-import com.hanghae.preorder.entity.User;
-import com.hanghae.preorder.repository.UserRepository;
+import com.hanghae.preorder.user.dto.request.UserRequest;
+import com.hanghae.preorder.user.dto.response.UserResponse;
+import com.hanghae.preorder.user.entity.User;
+import com.hanghae.preorder.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

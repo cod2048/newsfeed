@@ -1,4 +1,4 @@
-package com.hanghae.preorder.dto.response;
+package com.hanghae.preorder.user.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @ToString
-public class UserResponse {
-    private Long id;
+public class UserRequest {
+    private String email;
+    private String password;
     private String name;
+    private String profileImage;
+    private String greeting;
 }

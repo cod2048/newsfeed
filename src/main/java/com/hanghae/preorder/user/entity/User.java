@@ -1,6 +1,6 @@
-package com.hanghae.preorder.entity;
+package com.hanghae.preorder.user.entity;
 
-import com.hanghae.preorder.dto.request.UserRequest;
+import com.hanghae.preorder.user.dto.request.UserRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 

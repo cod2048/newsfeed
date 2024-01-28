@@ -1,6 +1,6 @@
-package com.hanghae.preorder.repository;
+package com.hanghae.preorder.user.repository;
 
-import com.hanghae.preorder.entity.User;
+import com.hanghae.preorder.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
