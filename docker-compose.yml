@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_service
+    volumes:
+      - ~/Desktop/junik/hanghae/db/mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: pre_order
+      MYSQL_USER: hanghae
+      MYSQL_PASSWORD: hanghae
