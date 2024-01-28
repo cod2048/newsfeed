@@ -1,5 +1,6 @@
 package com.hanghae.preorder.entity;
 
+import com.hanghae.preorder.dto.request.UserRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -38,4 +39,12 @@ public class User {
     }
 
 
+    public User update(UserRequest userRequest) {
+        this.password = userRequest.getPassword();
+        this.name = userRequest.getName();
+        this.profileImage = userRequest.getProfileImage();
+        this.greeting = userRequest.getGreeting();
+
+        return this;
+    }
 }

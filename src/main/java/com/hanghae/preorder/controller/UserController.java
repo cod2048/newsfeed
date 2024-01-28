@@ -4,9 +4,7 @@ import com.hanghae.preorder.dto.request.UserRequest;
 import com.hanghae.preorder.dto.response.UserResponse;
 import com.hanghae.preorder.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -16,8 +14,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/api/signup")
+    @PostMapping("/api/users")
     public ResponseEntity<UserResponse> signUp(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(userService.create(userRequest));
+    }
+
+    @PutMapping("/api/users/{id}")
+    public ResponseEntity<UserResponse> update(@PathVariable Long id,
+                                               @RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(userService.update(id, userRequest));
     }
 }
