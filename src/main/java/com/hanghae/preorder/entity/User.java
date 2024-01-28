@@ -29,3 +29,4 @@ public class User {
         this.profileImage = profileImage;
         this.greeting = greeting;
     }
+}
