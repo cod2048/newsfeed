@@ -9,6 +9,10 @@ spring:
     hibernate:
       ddl-auto: create
 
+  redis:
+    port: 6379
+    host: localhost
+
   mail:
     host: smtp.google.com #smtp ?? ??
     port: 587 # ?? ???? ??(??? 587?)
