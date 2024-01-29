@@ -20,6 +20,8 @@ public class User {
     private String profileImage;
     @Column(name = "greeting", nullable = false)
     private String greeting;
+    @Column(name = "verified", nullable = false)
+    private boolean verified = false;
 
     public User() {
     }
