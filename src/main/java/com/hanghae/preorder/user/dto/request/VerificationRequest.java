@@ -9,11 +9,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @ToString
-public class UserRequest {
+public class VerificationRequest {
     private String email;
-    private String password;
-    private String name;
-    private String profileImage;
-    private String greeting;
-    private String verificationCode;
 }

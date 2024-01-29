@@ -15,10 +15,10 @@ spring:
       host: localhost
 
   mail:
-    host: smtp.google.com #smtp ?? ??
-    port: 587 # ?? ???? ??(??? 587?)
-    username: cod2048@gmail.com #?? ???
-    password: ${EMAIL_PASSWORD} #?? ????
+    host: smtp.gmail.com
+    port: 587
+    username: cod2048@gmail.com
+    password: ${EMAIL_PASSWORD}
     auth-code-expiration-millis: 600000
     properties:
       mail:
@@ -30,6 +30,3 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-#          ssl:
-#            #trust: smtp.naver.com
-#            enable: true #??? ?? -> SSL ??? ?????
