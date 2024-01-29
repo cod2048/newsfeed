@@ -12,3 +12,17 @@ services:
       MYSQL_DATABASE: pre_order
       MYSQL_USER: hanghae
       MYSQL_PASSWORD: hanghae
+    networks:
+      - hanghae_network
+
+  redis:
+    hostname: redis
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - hanghae_network
+
+networks:
+  hanghae_network:
