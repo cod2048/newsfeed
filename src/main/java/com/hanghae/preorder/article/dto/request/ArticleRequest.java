@@ -14,6 +14,4 @@ public class ArticleRequest {
     private Long userId;
     private String title;
     private String content;
-
-
 }
