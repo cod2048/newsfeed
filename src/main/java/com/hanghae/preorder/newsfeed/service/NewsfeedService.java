@@ -8,6 +8,7 @@ import com.hanghae.preorder.comment.repository.CommentRepository;
 import com.hanghae.preorder.user.repository.UserRepository;
 import com.hanghae.preorder.follow.repository.FollowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,7 +40,9 @@ public class NewsfeedService {
                 .map(follow -> follow.getFollowing().getId())
                 .collect(Collectors.toList());
 
-        return activityRepository.findByUserIdIn(followingIds).stream()
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        return activityRepository.findByUserIdIn(followingIds, sort).stream()
                 .map(activity -> {
                     String details = generateActivityDetails(activity);
                     return new NewsfeedItemResponse(
