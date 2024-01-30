@@ -8,10 +8,8 @@ import com.hanghae.preorder.user.dto.response.LoginResponse;
 import com.hanghae.preorder.user.dto.response.UserResponse;
 import com.hanghae.preorder.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -51,4 +49,5 @@ public class UserController {
         Long userId = userDetails.getId();
         return ResponseEntity.ok(userService.update(id, userId, userRequest));
     }
+
 }

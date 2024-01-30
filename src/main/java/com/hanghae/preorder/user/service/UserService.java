@@ -115,20 +115,25 @@ public class UserService {
     }
 
     public UserResponse update(Long id, Long requestId, UserRequest userRequest) {
-        //1. 받아온 id로 db에 user 존재 유무 확인
+        // 1. 받아온 id로 db에 user 존재 유무 확인
         User target = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("can't find user"));
 
-        //2. 받아온 userRequest값으로 target 정보 수정
+        // 2. 받아온 userRequest 값으로 비밀번호 변경
+        String newPassword = userRequest.getPassword();
+        userRequest.updatePassword(newPassword, bCryptPasswordEncoder);
+
+        // 3. 나머지 userRequest 값으로 target 정보 수정
         target.update(userRequest);
 
-        //3. 수정된 정보 db 저장
+        // 4. 수정된 정보 db 저장
         User updated = userRepository.save(target);
 
-        //4. 저장 후 userResponse로 변환해서 반환
+        // 5. 저장 후 userResponse로 변환해서 반환
         return new UserResponse(
                 updated.getId(),
                 updated.getName()
         );
     }
+
 }
