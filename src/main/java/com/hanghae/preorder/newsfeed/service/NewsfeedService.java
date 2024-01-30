@@ -58,19 +58,25 @@ public class NewsfeedService {
                 String articleTitle = articleRepository.findById(activity.getTargetId())
                         .map(article -> article.getTitle())
                         .orElse("알 수 없는 게시글");
-                yield activity.getUser().getName() + "님이 " + articleTitle + "에 댓글을 남겼습니다.";
-                // 댓글이 달린 게시글의 제목을 포함
+                yield activity.getUser().getName() + "님이 " + articleTitle + " 댓글을 남겼습니다.";
             }
-            case LIKE ->
-                // 좋아요가 눌린 대상(게시글 또는 댓글)의 정보를 포함
-                // 이 부분은 해당 애플리케이션의 데이터 모델에 따라 구현 방법이 달라질 수 있습니다.
-                    activity.getUser().getName() + "님이 좋아요를 눌렀습니다.";
+            case ARTICLE_LIKE -> {
+                String articleTitleForLike = articleRepository.findById(activity.getTargetId())
+                        .map(article -> article.getTitle())
+                        .orElse("알 수 없는 게시글");
+                yield activity.getUser().getName() + "님이 " + articleTitleForLike + " 글에 좋아요를 눌렀습니다.";
+            }
+            case COMMENT_LIKE -> {
+                String commentContentForLike = commentRepository.findById(activity.getTargetId())
+                        .map(comment -> comment.getContent())
+                        .orElse("알 수 없는 댓글");
+                yield activity.getUser().getName() + "님이 " + commentContentForLike + " 댓글에 좋아요를 눌렀습니다.";
+            }
             case FOLLOW -> {
                 String followedUserName = userRepository.findById(activity.getTargetId())
                         .map(user -> user.getName())
                         .orElse("알 수 없는 사용자");
                 yield activity.getUser().getName() + "님이 " + followedUserName + "님을 팔로우했습니다.";
-                // 팔로우된 사용자의 이름을 포함
             }
             default -> "알 수 없는 활동";
         };
