@@ -1,5 +1,7 @@
 package com.hanghae.preorder.like.service;
 
+import com.hanghae.preorder.activity.entity.Activity;
+import com.hanghae.preorder.activity.repository.ActivityRepository;
 import com.hanghae.preorder.article.entity.Article;
 import com.hanghae.preorder.article.repository.ArticleRepository;
 import com.hanghae.preorder.comment.repository.CommentRepository;
@@ -15,11 +17,13 @@ public class ArticleLikeService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final ArticleLikeRepository articleLikeRepository;
+    private final ActivityRepository activityRepository;
 
-    public ArticleLikeService(UserRepository userRepository, ArticleRepository articleRepository, ArticleLikeRepository articleLikeRepository) {
+    public ArticleLikeService(UserRepository userRepository, ArticleRepository articleRepository, ArticleLikeRepository articleLikeRepository, ActivityRepository activityRepository) {
         this.userRepository = userRepository;
         this.articleRepository = articleRepository;
         this.articleLikeRepository = articleLikeRepository;
+        this.activityRepository = activityRepository;
     }
 
     public void create(Long id, LikeRequest likeRequest) {
@@ -35,5 +39,9 @@ public class ArticleLikeService {
         );
 
         articleLikeRepository.save(newLike);
+
+        // 좋아요에 대한 Activity 생성 및 저장
+        Activity likeActivity = new Activity(user, Activity.ActivityType.ARTICLE_LIKE, article.getId());
+        activityRepository.save(likeActivity);
     }
 }

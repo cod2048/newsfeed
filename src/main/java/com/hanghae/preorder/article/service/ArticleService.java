@@ -1,5 +1,7 @@
 package com.hanghae.preorder.article.service;
 
+import com.hanghae.preorder.activity.entity.Activity;
+import com.hanghae.preorder.activity.repository.ActivityRepository;
 import com.hanghae.preorder.article.dto.request.ArticleRequest;
 import com.hanghae.preorder.article.dto.response.ArticleResponse;
 import com.hanghae.preorder.article.entity.Article;
@@ -13,10 +15,12 @@ import org.springframework.stereotype.Service;
 public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
+    private final ActivityRepository activityRepository;
 
-    public ArticleService(ArticleRepository articleRepository, UserRepository userRepository) {
+    public ArticleService(ArticleRepository articleRepository, UserRepository userRepository, ActivityRepository activityRepository) {
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
+        this.activityRepository = activityRepository;
     }
 
 
@@ -35,7 +39,11 @@ public class ArticleService {
         //2. 생성된 entity db에 저장
         Article createdArticle = articleRepository.save(newArticle);
 
-        //3. entity를 articleResponse로 변환해서 반환
+        //3. Article 작성에 대한 Activity 생성 및 저장
+        Activity activity = new Activity(user, Activity.ActivityType.ARTICLE, createdArticle.getId());
+        activityRepository.save(activity);
+
+        //4. entity를 articleResponse로 변환해서 반환
         return new ArticleResponse(
                 createdArticle.getId()
         );

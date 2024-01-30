@@ -3,6 +3,9 @@ package com.hanghae.preorder.activity.entity;
 import com.hanghae.preorder.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 
 @Entity
 @Getter
@@ -23,6 +26,11 @@ public class Activity {
     @Column(name = "target_id", nullable = false)
     private Long targetId;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt;
+
     public Activity() { }
 
     public Activity(User user, ActivityType type, Long targetId) {
@@ -32,8 +40,11 @@ public class Activity {
     }
 
     public enum ActivityType {
+        ARTICLE,
         COMMENT,
         LIKE,
-        FOLLOW
+        FOLLOW,
+        ARTICLE_LIKE,
+        COMMENT_LIKE
     }
 }
