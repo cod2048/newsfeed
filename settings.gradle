@@ -1,1 +1,5 @@
-rootProject.name = 'pre-order'
+rootProject.name = 'pre_order'
+
+include 'user_module'
+include 'activity_module'
+include 'newsfeed_module'
