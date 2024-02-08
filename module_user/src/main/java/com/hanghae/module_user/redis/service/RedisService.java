@@ -16,16 +16,23 @@ public class RedisService {
     }
 
     public boolean compareValue(String email, String verificationCode) {
-        if (checkEmail(email)) {
-            String findCode = redisTemplate.opsForValue().get(email);
-            return findCode != null && findCode.equals(verificationCode);
-        }
-        else {
+        if (emailNotMatch(email)){
             throw new IllegalStateException("no key");
         }
 
+        String findCode = redisTemplate.opsForValue().get(email);
+        return findCode != null && findCode.equals(verificationCode);
     }
-    public boolean checkEmail (String email){
-        return Boolean.TRUE.equals(redisTemplate.hasKey(email));
+
+    public boolean emailNotMatch(String email){
+        return Boolean.FALSE.equals(redisTemplate.hasKey(email));
+    }
+
+    public void saveRefreshToken(String key, String refreshToken, Long expirationTime, TimeUnit timeUnit) {
+        redisTemplate.opsForValue().set(key, refreshToken, expirationTime, timeUnit);
+    }
+
+    public void deleteRefreshToken(String key) {
+        redisTemplate.delete(key);
     }
 }

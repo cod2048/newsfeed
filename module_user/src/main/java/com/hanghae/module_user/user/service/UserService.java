@@ -118,17 +118,23 @@ public class UserService {
 
         User user = loginUser.get();
         String userName = user.getName();
-        if (bCryptPasswordEncoder.matches(password, user.getPassword())){
-            log.info("인코딩 패스워드 검증 성공");
-            String accessToken = jwtTokenProvider.generate(email, userName, TokenType.ACCESS);
-            String refreshToken = jwtTokenProvider.generate(email, userName, TokenType.REFRESH);
 
-            return new LoginResponse(accessToken, refreshToken);
-        }
-        else{
-            throw new IllegalStateException("비밀번호 불일치");
+        if (!bCryptPasswordEncoder.matches(password, user.getPassword())){
+            throw new IllegalArgumentException("password not match");
         }
 
+//        log.info("인코딩 패스워드 검증 성공");
+        String accessToken = jwtTokenProvider.generate(email, userName, TokenType.ACCESS);
+        String refreshToken = jwtTokenProvider.generate(email, userName, TokenType.REFRESH);
+
+        redisService.saveRefreshToken(email, refreshToken, jwtTokenProvider.getExpiredTime(refreshToken, TokenType.REFRESH), TimeUnit.MILLISECONDS);
+
+        return new LoginResponse(accessToken, refreshToken);
+    }
+
+    public void logout(String accessToken) {
+        String email = jwtTokenProvider.getEmail(accessToken, TokenType.ACCESS);
+        redisService.deleteRefreshToken(email);
     }
 
 //    public CreateUserResponse update(Long id, Long requestId, CreateUserRequest createUserRequest) {

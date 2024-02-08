@@ -86,4 +86,6 @@ public class JwtTokenProvider {
         byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
 }

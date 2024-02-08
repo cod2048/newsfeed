@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
             final String token = parseBearerToken(authorizationHeader);
 
             String email = jwtTokenProvider.getEmail(token, TokenType.ACCESS);

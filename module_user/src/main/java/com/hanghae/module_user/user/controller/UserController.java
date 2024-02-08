@@ -7,6 +7,7 @@ import com.hanghae.module_user.user.dto.request.VerificationRequest;
 import com.hanghae.module_user.user.dto.response.LoginResponse;
 import com.hanghae.module_user.user.dto.response.CreateUserResponse;
 import com.hanghae.module_user.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping("/api/verification")
-    public ResponseEntity<Void> verifyEmail(@RequestBody VerificationRequest verificationRequest){
+    public ResponseEntity<Void> verifyEmail(@RequestBody VerificationRequest verificationRequest) {
         log.info("이메일 인증 시작");
         String email = verificationRequest.getEmail();
         userService.verifyEmail(email);
@@ -37,13 +38,22 @@ public class UserController {
     }
 
     @PostMapping("/api/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         LoginResponse loginResponse = userService.login(loginRequest);
 
         response.setHeader("access-Token", loginResponse.getAccessToken());
         response.setHeader("refresh-Token", loginResponse.getRefreshToken());
         return ResponseEntity.ok().body("Login successful");
     }
+
+    @PostMapping("/api/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        String token = authorizationHeader.substring(7);
+        userService.logout(token);
+        return ResponseEntity.ok().body("logout success");
+    }
+
 
 //    @PutMapping("/api/users/{id}")
 //    public ResponseEntity<CreateUserResponse> update(@PathVariable Long id,
