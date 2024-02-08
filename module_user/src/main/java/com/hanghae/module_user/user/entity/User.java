@@ -1,6 +1,7 @@
 package com.hanghae.module_user.user.entity;
 
 import com.hanghae.module_user.user.dto.request.CreateUserRequest;
+import com.hanghae.module_user.user.dto.request.UpdateUserRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -72,13 +73,12 @@ public class User {
                 .build();
     }
 
-//    public User updateProfile(UpdateUserRequest updateUserRequest) {
-//        this.name = updateUserRequest.getName();
-//        this.profileImage = updateUserRequest.getProfileImage();
-//        this.greeting = updateUserRequest.getGreeting();
-//
-//        return this;
-//    }
+    public void updateProfile(UpdateUserRequest updateUserRequest) {
+        this.name = updateUserRequest.getName();
+        this.profileImage = updateUserRequest.getProfileImage();
+        this.greeting = updateUserRequest.getGreeting();
+
+    }
 
 //    public User updatePassword(UpdatePasswordRequest updatePasswordRequest) {
 //

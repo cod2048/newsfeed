@@ -1,21 +1,16 @@
-package com.hanghae.module_user.user.dto.request;
+package com.hanghae.module_user.user.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @ToString
-public class CreateUserRequest {
-    private String email;
-    private String password;
+public class UpdateUserResponse {
     private String name;
     private String profileImage;
     private String greeting;
-    private String verificationCode;
-
 }

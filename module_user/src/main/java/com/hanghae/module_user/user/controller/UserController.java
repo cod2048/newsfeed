@@ -3,9 +3,11 @@ package com.hanghae.module_user.user.controller;
 import com.hanghae.module_user.security.UserDetailsImpl;
 import com.hanghae.module_user.user.dto.request.LoginRequest;
 import com.hanghae.module_user.user.dto.request.CreateUserRequest;
+import com.hanghae.module_user.user.dto.request.UpdateUserRequest;
 import com.hanghae.module_user.user.dto.request.VerificationRequest;
 import com.hanghae.module_user.user.dto.response.LoginResponse;
 import com.hanghae.module_user.user.dto.response.CreateUserResponse;
+import com.hanghae.module_user.user.dto.response.UpdateUserResponse;
 import com.hanghae.module_user.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,12 +31,12 @@ public class UserController {
     }
 
     @PostMapping("/api/verification")
-    public ResponseEntity<Void> verifyEmail(@RequestBody VerificationRequest verificationRequest) {
+    public ResponseEntity<?> verifyEmail(@RequestBody VerificationRequest verificationRequest) {
         log.info("이메일 인증 시작");
         String email = verificationRequest.getEmail();
         userService.verifyEmail(email);
         log.info("이메일 인증 끝");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("send email successful");
     }
 
     @PostMapping("/api/login")
@@ -55,13 +57,13 @@ public class UserController {
     }
 
 
-//    @PutMapping("/api/users/{id}")
-//    public ResponseEntity<CreateUserResponse> update(@PathVariable Long id,
-//                                                     @RequestBody CreateUserRequest createUserRequest,
-//                                                     @AuthenticationPrincipal UserDetailsImpl userDetails
-//    ) {
-//        Long userId = userDetails.getId();
-//        return ResponseEntity.ok(userService.update(id, userId, createUserRequest));
-//    }
+    @PutMapping("/api/users/{id}")
+    public ResponseEntity<UpdateUserResponse> update(@PathVariable Long id,
+                                                     @RequestBody UpdateUserRequest updateUserRequest,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getId();
+        return ResponseEntity.ok(userService.update(id, userId, updateUserRequest));
+    }
 
 }

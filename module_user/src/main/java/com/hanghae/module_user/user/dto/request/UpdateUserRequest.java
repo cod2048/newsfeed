@@ -10,12 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @NoArgsConstructor
 @Getter
 @ToString
-public class CreateUserRequest {
-    private String email;
-    private String password;
+public class UpdateUserRequest {
     private String name;
     private String profileImage;
     private String greeting;
-    private String verificationCode;
 
 }

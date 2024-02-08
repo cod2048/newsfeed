@@ -6,8 +6,10 @@ import com.hanghae.module_user.security.jwt.JwtTokenProvider;
 import com.hanghae.module_user.security.jwt.TokenType;
 import com.hanghae.module_user.user.dto.request.LoginRequest;
 import com.hanghae.module_user.user.dto.request.CreateUserRequest;
+import com.hanghae.module_user.user.dto.request.UpdateUserRequest;
 import com.hanghae.module_user.user.dto.response.LoginResponse;
 import com.hanghae.module_user.user.dto.response.CreateUserResponse;
+import com.hanghae.module_user.user.dto.response.UpdateUserResponse;
 import com.hanghae.module_user.user.entity.User;
 import com.hanghae.module_user.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -137,26 +139,27 @@ public class UserService {
         redisService.deleteRefreshToken(email);
     }
 
-//    public CreateUserResponse update(Long id, Long requestId, CreateUserRequest createUserRequest) {
-//        // 1. 받아온 id로 db에 user 존재 유무 확인
-//        User target = userRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("can't find user"));
-//
-//        // 2. 받아온 userRequest 값으로 비밀번호 변경
-//        String newPassword = createUserRequest.getPassword();
+    public UpdateUserResponse update(Long id, Long requestId, UpdateUserRequest updateUserRequest) {
+        // 1. 받아온 id로 db에 user 존재 유무 확인
+        User target = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("can't find user"));
+
+        // 3. 나머지 userRequest 값으로 target 정보 수정
+        target.updateProfile(updateUserRequest);
+
+        // 4. 수정된 정보 db 저장
+        User updated = userRepository.save(target);
+
+        // 5. 저장 후 userResponse로 변환해서 반환
+        return new UpdateUserResponse(
+                updated.getName(),
+                updated.getProfileImage(),
+                updated.getGreeting()
+        );
+    }
+
+    // 2. 받아온 userRequest 값으로 비밀번호 변경
+//        String newPassword = updateUserRequest.getPassword();
 //        createUserRequest.updatePassword(newPassword, bCryptPasswordEncoder);
-//
-//        // 3. 나머지 userRequest 값으로 target 정보 수정
-//        target.update(createUserRequest);
-//
-//        // 4. 수정된 정보 db 저장
-//        User updated = userRepository.save(target);
-//
-//        // 5. 저장 후 userResponse로 변환해서 반환
-//        return new CreateUserResponse(
-//                updated.getId(),
-//                updated.getName()
-//        );
-//    }
 
 }
