@@ -1,6 +1,7 @@
 package com.hanghae.module_user.user.entity;
 
 import com.hanghae.module_user.user.dto.request.CreateUserRequest;
+import com.hanghae.module_user.user.dto.request.UpdatePasswordRequest;
 import com.hanghae.module_user.user.dto.request.UpdateUserRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -80,7 +81,7 @@ public class User {
 
     }
 
-//    public User updatePassword(UpdatePasswordRequest updatePasswordRequest) {
-//
-//    }
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }

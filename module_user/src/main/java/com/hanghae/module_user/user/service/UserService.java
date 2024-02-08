@@ -6,6 +6,7 @@ import com.hanghae.module_user.security.jwt.JwtTokenProvider;
 import com.hanghae.module_user.security.jwt.TokenType;
 import com.hanghae.module_user.user.dto.request.LoginRequest;
 import com.hanghae.module_user.user.dto.request.CreateUserRequest;
+import com.hanghae.module_user.user.dto.request.UpdatePasswordRequest;
 import com.hanghae.module_user.user.dto.request.UpdateUserRequest;
 import com.hanghae.module_user.user.dto.response.LoginResponse;
 import com.hanghae.module_user.user.dto.response.CreateUserResponse;
@@ -37,6 +38,7 @@ public class UserService {
     private Long timeout;
 
     // TODO : s3연결 후 이미지 url 저장
+
     /**
      * 회원가입
      */
@@ -62,7 +64,7 @@ public class UserService {
         String verificationCode = createUserRequest.getVerificationCode();
         String userEmail = createUserRequest.getEmail();
 
-        if(isVerify(userEmail, verificationCode)){
+        if (isVerify(userEmail, verificationCode)) {
             String encodedPassword = bCryptPasswordEncoder.encode(createUserRequest.getPassword());
             //1. userRequest로 entity 생성
             User newUser = User.create(createUserRequest, encodedPassword);
@@ -72,11 +74,10 @@ public class UserService {
 
             //3. entity를 userResponse 변환해서 반환
             return new CreateUserResponse(
-                createdUser.getId(),
-                createdUser.getEmail()
+                    createdUser.getId(),
+                    createdUser.getEmail()
             );
-        }
-        else{
+        } else {
             throw new IllegalStateException("verification code not match");
         }
 
@@ -90,7 +91,7 @@ public class UserService {
         return redisService.compareValue(userEmail, requestCode);
     }
 
-    public void verifyEmail(String email){
+    public void verifyEmail(String email) {
 
         //1. 가입 요청 들어오면 이메일전송(이 안에 코드 생성까지 있음)
         String verificationCode = generateRandomCode();
@@ -114,14 +115,14 @@ public class UserService {
         String password = loginRequest.getPassword();
         Optional<User> loginUser = userRepository.findByEmail(email);
 
-        if(!loginUser.isPresent()) {
+        if (!loginUser.isPresent()) {
             throw new IllegalArgumentException("user not exist");
         }
 
         User user = loginUser.get();
         String userName = user.getName();
 
-        if (!bCryptPasswordEncoder.matches(password, user.getPassword())){
+        if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("password not match");
         }
 
@@ -158,8 +159,14 @@ public class UserService {
         );
     }
 
-    // 2. 받아온 userRequest 값으로 비밀번호 변경
-//        String newPassword = updateUserRequest.getPassword();
-//        createUserRequest.updatePassword(newPassword, bCryptPasswordEncoder);
+    public void updatePassword(Long id, UpdatePasswordRequest updatePasswordRequest) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        String encodedNewPassword = bCryptPasswordEncoder.encode(updatePasswordRequest.getPassword());
+
+        user.updatePassword(encodedNewPassword);
+
+        userRepository.save(user);
+    }
 }

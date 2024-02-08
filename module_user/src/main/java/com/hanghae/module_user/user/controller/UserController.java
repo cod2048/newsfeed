@@ -1,10 +1,7 @@
 package com.hanghae.module_user.user.controller;
 
 import com.hanghae.module_user.security.UserDetailsImpl;
-import com.hanghae.module_user.user.dto.request.LoginRequest;
-import com.hanghae.module_user.user.dto.request.CreateUserRequest;
-import com.hanghae.module_user.user.dto.request.UpdateUserRequest;
-import com.hanghae.module_user.user.dto.request.VerificationRequest;
+import com.hanghae.module_user.user.dto.request.*;
 import com.hanghae.module_user.user.dto.response.LoginResponse;
 import com.hanghae.module_user.user.dto.response.CreateUserResponse;
 import com.hanghae.module_user.user.dto.response.UpdateUserResponse;
@@ -64,6 +61,15 @@ public class UserController {
     ) {
         Long userId = userDetails.getId();
         return ResponseEntity.ok(userService.update(id, userId, updateUserRequest));
+    }
+
+    @PutMapping("/api/users/{id}/password")
+    public ResponseEntity<?> update(@PathVariable Long id,
+                                                     @RequestBody UpdatePasswordRequest updatePasswordRequest,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        userService.updatePassword(id, updatePasswordRequest);
+        return ResponseEntity.ok().body("password change successful");
     }
 
 }
