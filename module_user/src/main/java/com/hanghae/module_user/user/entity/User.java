@@ -1,17 +1,18 @@
 package com.hanghae.module_user.user.entity;
 
 import com.hanghae.module_user.user.dto.request.CreateUserRequest;
-import com.hanghae.module_user.user.dto.request.UpdatePasswordRequest;
 import com.hanghae.module_user.user.dto.request.UpdateUserRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 public class User {
     @Id
