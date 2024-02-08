@@ -5,9 +5,9 @@ import com.hanghae.module_user.redis.service.RedisService;
 import com.hanghae.module_user.security.jwt.JwtTokenProvider;
 import com.hanghae.module_user.security.jwt.TokenType;
 import com.hanghae.module_user.user.dto.request.LoginRequest;
-import com.hanghae.module_user.user.dto.request.UserRequest;
+import com.hanghae.module_user.user.dto.request.CreateUserRequest;
 import com.hanghae.module_user.user.dto.response.LoginResponse;
-import com.hanghae.module_user.user.dto.response.UserResponse;
+import com.hanghae.module_user.user.dto.response.CreateUserResponse;
 import com.hanghae.module_user.user.entity.User;
 import com.hanghae.module_user.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,38 +34,58 @@ public class UserService {
     @Value("${spring.mail.auth-code-expiration-millis}")
     private Long timeout;
 
+    // TODO : s3연결 후 이미지 url 저장
+    /**
+     * 회원가입
+     */
     @Transactional
-    public UserResponse create(UserRequest userRequest) {
+    public CreateUserResponse create(CreateUserRequest createUserRequest) {
+        // 이메일 중복체크
+        if (checkEmailDuplication(createUserRequest.getEmail())) {
+            throw new IllegalArgumentException("already exist email");
+        }
 
-        String emailCode = userRequest.getVerificationCode();
-        String userEmail = userRequest.getEmail();
+        //필수 요소확인 : 이름, 프로필 이미지, 인사말
+        if (createUserRequest.getName() == null || createUserRequest.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("name is empty");
+        }
+        if (createUserRequest.getProfileImage() == null || createUserRequest.getProfileImage().trim().isEmpty()) {
+            throw new IllegalArgumentException("profile image is empty");
+        }
+        if (createUserRequest.getGreeting() == null || createUserRequest.getGreeting().trim().isEmpty()) {
+            throw new IllegalArgumentException("greeting is empty");
+        }
 
-        boolean checkCode = redisService.compareValue(userEmail, emailCode);
+        //인증코드 확인
+        String verificationCode = createUserRequest.getVerificationCode();
+        String userEmail = createUserRequest.getEmail();
 
-        if(checkCode){
-            String encodingPassword = bCryptPasswordEncoder.encode(userRequest.getPassword());
+        if(isVerify(userEmail, verificationCode)){
+            String encodedPassword = bCryptPasswordEncoder.encode(createUserRequest.getPassword());
             //1. userRequest로 entity 생성
-            User newUser = new User(
-                userRequest.getEmail(),
-                encodingPassword,
-                userRequest.getName(),
-                userRequest.getProfileImage(),
-                userRequest.getGreeting()
-            );
+            User newUser = User.create(createUserRequest, encodedPassword);
 
             //2. 생성된 entity db에 저장
             User createdUser = userRepository.save(newUser);
 
-        //3. entity를 userResponse 변환해서 반환
-            return new UserResponse(
+            //3. entity를 userResponse 변환해서 반환
+            return new CreateUserResponse(
                 createdUser.getId(),
-                createdUser.getName()
+                createdUser.getEmail()
             );
         }
         else{
-            throw new IllegalStateException("can't create user");
+            throw new IllegalStateException("verification code not match");
         }
 
+    }
+
+    public boolean checkEmailDuplication(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean isVerify(String userEmail, String requestCode) {
+        return redisService.compareValue(userEmail, requestCode);
     }
 
     public void verifyEmail(String email){
@@ -114,23 +134,23 @@ public class UserService {
         }
     }
 
-    public UserResponse update(Long id, Long requestId, UserRequest userRequest) {
+    public CreateUserResponse update(Long id, Long requestId, CreateUserRequest createUserRequest) {
         // 1. 받아온 id로 db에 user 존재 유무 확인
         User target = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("can't find user"));
 
         // 2. 받아온 userRequest 값으로 비밀번호 변경
-        String newPassword = userRequest.getPassword();
-        userRequest.updatePassword(newPassword, bCryptPasswordEncoder);
+        String newPassword = createUserRequest.getPassword();
+        createUserRequest.updatePassword(newPassword, bCryptPasswordEncoder);
 
         // 3. 나머지 userRequest 값으로 target 정보 수정
-        target.update(userRequest);
+        target.update(createUserRequest);
 
         // 4. 수정된 정보 db 저장
         User updated = userRepository.save(target);
 
         // 5. 저장 후 userResponse로 변환해서 반환
-        return new UserResponse(
+        return new CreateUserResponse(
                 updated.getId(),
                 updated.getName()
         );

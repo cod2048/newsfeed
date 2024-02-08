@@ -9,7 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @ToString
-public class UserResponse {
+public class CreateUserResponse {
     private Long id;
-    private String name;
+    private String email;
 }

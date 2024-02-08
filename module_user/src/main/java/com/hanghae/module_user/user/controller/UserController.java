@@ -2,10 +2,10 @@ package com.hanghae.module_user.user.controller;
 
 import com.hanghae.module_user.security.UserDetailsImpl;
 import com.hanghae.module_user.user.dto.request.LoginRequest;
-import com.hanghae.module_user.user.dto.request.UserRequest;
+import com.hanghae.module_user.user.dto.request.CreateUserRequest;
 import com.hanghae.module_user.user.dto.request.VerificationRequest;
 import com.hanghae.module_user.user.dto.response.LoginResponse;
-import com.hanghae.module_user.user.dto.response.UserResponse;
+import com.hanghae.module_user.user.dto.response.CreateUserResponse;
 import com.hanghae.module_user.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,8 @@ public class UserController {
     }
 
     @PostMapping("/api/users")
-    public ResponseEntity<UserResponse> signUp(@RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(userService.create(userRequest));
+    public ResponseEntity<CreateUserResponse> signUp(@RequestBody CreateUserRequest createUserRequest) {
+        return ResponseEntity.ok(userService.create(createUserRequest));
     }
 
     @PostMapping("/api/verification")
@@ -42,12 +42,12 @@ public class UserController {
     }
 
     @PutMapping("/api/users/{id}")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id,
-                                               @RequestBody UserRequest userRequest,
-                                               @AuthenticationPrincipal UserDetailsImpl userDetails
+    public ResponseEntity<CreateUserResponse> update(@PathVariable Long id,
+                                                     @RequestBody CreateUserRequest createUserRequest,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         Long userId = userDetails.getId();
-        return ResponseEntity.ok(userService.update(id, userId, userRequest));
+        return ResponseEntity.ok(userService.update(id, userId, createUserRequest));
     }
 
 }
