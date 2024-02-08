@@ -72,15 +72,15 @@ public class User {
                 .build();
     }
 
-    public User updateProfile(UpdateUserRequest updateUserRequest) {
-        this.name = updateUserRequest.getName();
-        this.profileImage = updateUserRequest.getProfileImage();
-        this.greeting = updateUserRequest.getGreeting();
+//    public User updateProfile(UpdateUserRequest updateUserRequest) {
+//        this.name = updateUserRequest.getName();
+//        this.profileImage = updateUserRequest.getProfileImage();
+//        this.greeting = updateUserRequest.getGreeting();
+//
+//        return this;
+//    }
 
-        return this;
-    }
-
-    public User updatePassword(UpdatePasswordRequest updatePasswordRequest) {
-
-    }
+//    public User updatePassword(UpdatePasswordRequest updatePasswordRequest) {
+//
+//    }
 }

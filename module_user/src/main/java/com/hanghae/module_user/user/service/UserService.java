@@ -111,49 +111,46 @@ public class UserService {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         Optional<User> loginUser = userRepository.findByEmail(email);
-        log.info("로그인 서비스 진입(email,password가져오고, 유저찾기)");
-        //2중 if문 쓰지말고 findByEmail뒤에 throw추가하기
 
-        if(loginUser.isPresent()) {
-            log.info("유저 찾기 성공");
-            User user = loginUser.get();
-            String userName = user.getName();
-            if (bCryptPasswordEncoder.matches(password, user.getPassword())){
-                log.info("인코딩 패스워드 검증 성공");
-                String accessToken = jwtTokenProvider.generate(email, userName, TokenType.ACCESS);
-                String refreshToken = jwtTokenProvider.generate(email, userName, TokenType.REFRESH);
+        if(!loginUser.isPresent()) {
+            throw new IllegalArgumentException("user not exist");
+        }
 
-                return new LoginResponse(accessToken, refreshToken, email, userName);
-            }
-            else{
-                throw new IllegalStateException("비밀번호 불일치");
-            }
+        User user = loginUser.get();
+        String userName = user.getName();
+        if (bCryptPasswordEncoder.matches(password, user.getPassword())){
+            log.info("인코딩 패스워드 검증 성공");
+            String accessToken = jwtTokenProvider.generate(email, userName, TokenType.ACCESS);
+            String refreshToken = jwtTokenProvider.generate(email, userName, TokenType.REFRESH);
+
+            return new LoginResponse(accessToken, refreshToken);
         }
         else{
-            throw new IllegalStateException("유저 정보 없음");
+            throw new IllegalStateException("비밀번호 불일치");
         }
+
     }
 
-    public CreateUserResponse update(Long id, Long requestId, CreateUserRequest createUserRequest) {
-        // 1. 받아온 id로 db에 user 존재 유무 확인
-        User target = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("can't find user"));
-
-        // 2. 받아온 userRequest 값으로 비밀번호 변경
-        String newPassword = createUserRequest.getPassword();
-        createUserRequest.updatePassword(newPassword, bCryptPasswordEncoder);
-
-        // 3. 나머지 userRequest 값으로 target 정보 수정
-        target.update(createUserRequest);
-
-        // 4. 수정된 정보 db 저장
-        User updated = userRepository.save(target);
-
-        // 5. 저장 후 userResponse로 변환해서 반환
-        return new CreateUserResponse(
-                updated.getId(),
-                updated.getName()
-        );
-    }
+//    public CreateUserResponse update(Long id, Long requestId, CreateUserRequest createUserRequest) {
+//        // 1. 받아온 id로 db에 user 존재 유무 확인
+//        User target = userRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("can't find user"));
+//
+//        // 2. 받아온 userRequest 값으로 비밀번호 변경
+//        String newPassword = createUserRequest.getPassword();
+//        createUserRequest.updatePassword(newPassword, bCryptPasswordEncoder);
+//
+//        // 3. 나머지 userRequest 값으로 target 정보 수정
+//        target.update(createUserRequest);
+//
+//        // 4. 수정된 정보 db 저장
+//        User updated = userRepository.save(target);
+//
+//        // 5. 저장 후 userResponse로 변환해서 반환
+//        return new CreateUserResponse(
+//                updated.getId(),
+//                updated.getName()
+//        );
+//    }
 
 }

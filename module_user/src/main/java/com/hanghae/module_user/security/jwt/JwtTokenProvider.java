@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -12,17 +13,17 @@ import java.util.Date;
 
 @Service
 public class JwtTokenProvider {
-//    @Value("${jwt.secret-key.access}")
-    private String accessSecretKey = "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcv";
+    @Value("${jwt.secret-key.access}")
+    private String accessSecretKey;
 
-//    @Value("${jwt.secret-key.refresh}")
-    private String refreshSecretKey = "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcv";
+    @Value("${jwt.secret-key.refresh}")
+    private String refreshSecretKey;
 
-//    @Value("${jwt.expired-time.token.access}")
-    private Long accessTokenExpiredTimeMs = 20000000000L;
+    @Value("${jwt.expired-time.token.access}")
+    private Long accessTokenExpiredTimeMs;
 
-//    @Value("${jwt.expired-time.token.refresh}")
-    private Long refreshTokenExpiredTimeMs = 20000000000L;
+    @Value("${jwt.expired-time.token.refresh}")
+    private Long refreshTokenExpiredTimeMs;
 
     public String generate(String email, String userName, TokenType type) {
         Claims claims = Jwts.claims();
