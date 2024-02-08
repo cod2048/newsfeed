@@ -1,7 +1,6 @@
 package com.hanghae.module_activity.like.entity;
 
 import com.hanghae.module_activity.article.entity.Article;
-import com.hanghae.module_activity.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -12,9 +11,8 @@ public class ArticleLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "article_id")
