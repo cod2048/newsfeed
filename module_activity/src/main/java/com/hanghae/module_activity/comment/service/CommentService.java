@@ -1,51 +1,48 @@
 package com.hanghae.module_activity.comment.service;
 
-import com.hanghae.module_activity.activity.entity.Activity;
-import com.hanghae.module_activity.activity.repository.ActivityRepository;
 import com.hanghae.module_activity.article.entity.Article;
 import com.hanghae.module_activity.article.repository.ArticleRepository;
-import com.hanghae.module_activity.comment.dto.request.CommentRequest;
-import com.hanghae.module_activity.comment.dto.response.CommentResponse;
+import com.hanghae.module_activity.client.UserClient;
+import com.hanghae.module_activity.comment.dto.request.CreateCommentRequest;
 import com.hanghae.module_activity.comment.entity.Comment;
 import com.hanghae.module_activity.comment.repository.CommentRepository;
-import com.hanghae.module_activity.user.entity.User;
-import com.hanghae.module_activity.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommentService {
-    private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
-    private final ActivityRepository activityRepository;
+//    private final ActivityRepository activityRepository;
+    private final UserClient userClient;
 
-    public CommentService(UserRepository userRepository, ArticleRepository articleRepository, CommentRepository commentRepository, ActivityRepository activityRepository) {
-        this.userRepository = userRepository;
+    public CommentService(ArticleRepository articleRepository, CommentRepository commentRepository, UserClient userClient) {
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
-        this.activityRepository = activityRepository;
+//        this.activityRepository = activityRepository;
+        this.userClient = userClient;
     }
 
-    public CommentResponse create(CommentRequest commentRequest) {
-        User user = userRepository.findById(commentRequest.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("can't find user"));
+    public void create(CreateCommentRequest createCommentRequest) {
+        Long userId = createCommentRequest.getUserId();
 
-        Article article = articleRepository.findById(commentRequest.getArticleId())
+        Article article = articleRepository.findById(createCommentRequest.getArticleId())
                 .orElseThrow(() -> new IllegalArgumentException("can't find article"));
 
-        Comment newComment = new Comment(
-                user,
-                article,
-                commentRequest.getContent()
-        );
+        if (!userClient.checkUserExists(userId)) {
+            throw new IllegalArgumentException("user not exists");
+        }
 
-        Comment createdComment = commentRepository.save(newComment);
+        Comment newComment = Comment.builder()
+                .userId(userId)
+                .article(article)
+                .content(createCommentRequest.getContent())
+                .build();
 
-        Activity commentActivity = new Activity(user, Activity.ActivityType.COMMENT, createdComment.getId());
-        activityRepository.save(commentActivity);
+        commentRepository.save(newComment);
 
-        return new CommentResponse(
-                createdComment.getId()
-        );
+//        Activity commentActivity = new Activity(user, Activity.ActivityType.COMMENT, createdComment.getId());
+//        activityRepository.save(commentActivity);
+
+
     }
 }
