@@ -1,23 +1,24 @@
-package com.hanghae.module_newsfeed.activity.entity;
+package com.hanghae.module_newsfeed.entity;
 
-import com.hanghae.module_newsfeed.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
-public class Activity {
+public class Newsfeed {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_num")
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
@@ -26,15 +27,15 @@ public class Activity {
     @Column(name = "target_id", nullable = false)
     private Long targetId;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
-    public Activity() { }
+    public Newsfeed() { }
 
-    public Activity(User user, ActivityType type, Long targetId) {
-        this.user = user;
+    @Builder
+    public Newsfeed(Long userId, ActivityType type, Long targetId) {
+        this.userId = userId;
         this.type = type;
         this.targetId = targetId;
     }

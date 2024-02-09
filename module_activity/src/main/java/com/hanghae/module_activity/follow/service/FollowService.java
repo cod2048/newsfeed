@@ -1,5 +1,7 @@
 package com.hanghae.module_activity.follow.service;
 
+import com.hanghae.module_activity.client.NewsfeedClient;
+import com.hanghae.module_activity.client.NewsfeedClientRequest;
 import com.hanghae.module_activity.client.UserClient;
 import com.hanghae.module_activity.follow.dto.request.FollowRequest;
 import com.hanghae.module_activity.follow.entity.Follow;
@@ -7,22 +9,25 @@ import com.hanghae.module_activity.follow.repository.FollowRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class FollowService {
     private final FollowRepository followRepository;
     private final UserClient userClient;
-//    private final ActivityRepository activityRepository;
+    private final NewsfeedClient newsfeedClient;
 
-    public FollowService(FollowRepository followRepository, UserClient userClient){
+    public FollowService(FollowRepository followRepository, UserClient userClient, NewsfeedClient newsfeedClient){
         this.followRepository = followRepository;
-//        this.activityRepository = activityRepository;
         this.userClient = userClient;
+        this.newsfeedClient = newsfeedClient;
     }
 
     public void create(FollowRequest followRequest){
         Long followerId = followRequest.getUserId();
         Long followingId = followRequest.getFollowing();
+        String type = "FOLLOW";
 
         if (!userClient.checkUserExists(followerId)) {
             throw new IllegalArgumentException("follower user not exists");
@@ -43,8 +48,25 @@ public class FollowService {
 
 
 //        팔로우에 대한 Activity 생성 및 저장
-//        Activity followActivity = new Activity(follower, Activity.ActivityType.FOLLOW, following.getId());
-//        activityRepository.save(followActivity);
+        NewsfeedClientRequest newsfeedClientRequest = new NewsfeedClientRequest(
+                followerId,
+                type,
+                followingId
+        );
 
+        newsfeedClient.create(newsfeedClientRequest);
+
+    }
+
+    public List<Long> findByFollowingId(Long principalId) {
+        return followRepository.findFollowing(principalId).stream()
+                .map(Follow::getFollowingId)
+                .toList();
+    }
+
+    public List<Long> findByFollowerId(Long principalId) {
+        return followRepository.findFollower(principalId).stream()
+                .map(Follow::getFollowerId)
+                .toList();
     }
 }

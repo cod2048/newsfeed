@@ -1,4 +1,4 @@
-package com.hanghae.module_newsfeed.newsfeed.dto.response;
+package com.hanghae.module_newsfeed.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
