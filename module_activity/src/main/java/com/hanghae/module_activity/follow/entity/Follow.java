@@ -1,6 +1,7 @@
 package com.hanghae.module_activity.follow.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -26,12 +27,16 @@ public class Follow {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Follow() { }
+    protected Follow() { }
 
+    @Builder
     public Follow(Long follower, Long following){
         this.followerId = follower;
         this.followingId = following;
+        this.status = true;
+        this.updatedAt = LocalDateTime.now();
     }
+
 
     // 팔로우 해제 메소드
     public void deactivate() {

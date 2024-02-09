@@ -1,48 +1,50 @@
 package com.hanghae.module_activity.follow.service;
 
-import com.hanghae.module_activity.activity.entity.Activity;
-import com.hanghae.module_activity.activity.repository.ActivityRepository;
+import com.hanghae.module_activity.client.UserClient;
 import com.hanghae.module_activity.follow.dto.request.FollowRequest;
-import com.hanghae.module_activity.follow.dto.response.FollowResponse;
 import com.hanghae.module_activity.follow.entity.Follow;
 import com.hanghae.module_activity.follow.repository.FollowRepository;
-import com.hanghae.module_activity.user.entity.User;
-import com.hanghae.module_activity.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class FollowService {
-    private final UserRepository userRepository;
     private final FollowRepository followRepository;
-    private final ActivityRepository activityRepository;
+    private final UserClient userClient;
+//    private final ActivityRepository activityRepository;
 
-    public FollowService(UserRepository userRepository, FollowRepository followRepository, ActivityRepository activityRepository){
-        this.userRepository = userRepository;
+    public FollowService(FollowRepository followRepository, UserClient userClient){
         this.followRepository = followRepository;
-        this.activityRepository = activityRepository;
+//        this.activityRepository = activityRepository;
+        this.userClient = userClient;
     }
 
-    public FollowResponse create(FollowRequest followRequest){
-        User follower = userRepository.findById(followRequest.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("can't find user"));
+    public void create(FollowRequest followRequest){
+        Long followerId = followRequest.getUserId();
+        Long followingId = followRequest.getFollowing();
 
-        User following = userRepository.findById(followRequest.getFollowing())
-                .orElseThrow(() -> new IllegalArgumentException("can't find following user"));
+        if (!userClient.checkUserExists(followerId)) {
+            throw new IllegalArgumentException("follower user not exists");
+        }
 
-        Follow newFollow = new Follow(
-                follower,
-                following
-        );
+        if (!userClient.checkUserExists(followingId)) {
+            throw new IllegalArgumentException("following user not exists");
+        }
 
-        Follow createdFollow = followRepository.save(newFollow);
+        log.info("FollowService 진입");
+        Follow newFollow = Follow.builder()
+                        .follower(followerId)
+                        .following(followingId)
+                        .build();
+        log.info("newFollow 생성");
+        followRepository.save(newFollow);
+        log.info("newFollow 저장");
 
-        // 팔로우에 대한 Activity 생성 및 저장
-        Activity followActivity = new Activity(follower, Activity.ActivityType.FOLLOW, following.getId());
-        activityRepository.save(followActivity);
 
-        return new FollowResponse(
-                createdFollow.getFollower().getId(),
-                createdFollow.getFollowing().getId()
-        );
+//        팔로우에 대한 Activity 생성 및 저장
+//        Activity followActivity = new Activity(follower, Activity.ActivityType.FOLLOW, following.getId());
+//        activityRepository.save(followActivity);
+
     }
 }
