@@ -10,8 +10,8 @@ import lombok.ToString;
 @Getter
 @ToString
 public class NewsfeedItemResponse {
-    private Long activityId;
-    private String username;
+    private Long userId;
     private String activityType; // 활동 유형 ("COMMENT", "LIKE", "FOLLOW", "ARTICLE")
+    private Long targetId;
     private String details; // 활동 상세 내용
 }
