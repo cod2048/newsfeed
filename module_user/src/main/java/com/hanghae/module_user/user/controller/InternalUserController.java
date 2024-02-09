@@ -16,10 +16,17 @@ public class InternalUserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/check")
     public ResponseEntity<?> checkUserExists(
             @RequestParam(name = "userId") Long principalId
     ) {
         return ResponseEntity.ok().body(userService.checkUserExists(principalId));
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<?> findUserName(
+            @RequestParam(name = "userId") Long principalId
+    ) {
+        return ResponseEntity.ok().body(userService.findUserName(principalId));
     }
 }
