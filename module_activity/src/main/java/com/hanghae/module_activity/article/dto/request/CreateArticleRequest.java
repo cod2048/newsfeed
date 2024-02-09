@@ -9,7 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @ToString
-public class ArticleRequest {
+public class CreateArticleRequest {
     private Long userId;
     private String title;
     private String content;

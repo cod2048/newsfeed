@@ -1,50 +1,53 @@
 package com.hanghae.module_activity.article.service;
 
-import com.hanghae.module_activity.activity.entity.Activity;
-import com.hanghae.module_activity.activity.repository.ActivityRepository;
-import com.hanghae.module_activity.article.dto.request.ArticleRequest;
-import com.hanghae.module_activity.article.dto.response.ArticleResponse;
+import com.hanghae.module_activity.article.dto.request.CreateArticleRequest;
+import com.hanghae.module_activity.article.dto.request.UpdateArticleRequest;
 import com.hanghae.module_activity.article.entity.Article;
 import com.hanghae.module_activity.article.repository.ArticleRepository;
-import com.hanghae.module_activity.user.entity.User;
-import com.hanghae.module_activity.user.repository.UserRepository;
+import com.hanghae.module_activity.client.UserClient;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ArticleService {
     private final ArticleRepository articleRepository;
-    private final UserRepository userRepository;
-    private final ActivityRepository activityRepository;
+//    private final ActivityRepository activityRepository;
+    private final UserClient userClient;
 
-    public ArticleService(ArticleRepository articleRepository, UserRepository userRepository, ActivityRepository activityRepository) {
+    public ArticleService(ArticleRepository articleRepository, UserClient userClient) {
         this.articleRepository = articleRepository;
-        this.userRepository = userRepository;
-        this.activityRepository = activityRepository;
+//        this.activityRepository = activityRepository;
+        this.userClient = userClient;
     }
 
 
-    public ArticleResponse create(ArticleRequest articleRequest) {
+    public void create(CreateArticleRequest createArticleRequest) {
         //0. 받아온 userId로 user찾기
-        User user = userRepository.findById(articleRequest.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("can't find user"));
+        Long userId = createArticleRequest.getUserId();
+
+        if (!userClient.checkUserExists(userId)) {
+            throw new IllegalArgumentException("user not exists");
+        }
+
 
         //1. articleRequest로 entity 생성
         Article newArticle = new Article(
-                user,
-                articleRequest.getTitle(),
-                articleRequest.getContent()
+                userId,
+                createArticleRequest.getTitle(),
+                createArticleRequest.getContent()
         );
 
         //2. 생성된 entity db에 저장
-        Article createdArticle = articleRepository.save(newArticle);
+        articleRepository.save(newArticle);
 
         //3. Article 작성에 대한 Activity 생성 및 저장
-        Activity activity = new Activity(user, Activity.ActivityType.ARTICLE, createdArticle.getId());
-        activityRepository.save(activity);
+//        Activity activity = new Activity(user, Activity.ActivityType.ARTICLE, createdArticle.getId());
+//        activityRepository.save(activity);
+    }
 
-        //4. entity를 articleResponse로 변환해서 반환
-        return new ArticleResponse(
-                createdArticle.getId()
-        );
+    public void update(Long articleId, UpdateArticleRequest updateArticleRequest) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("Article not exists"));
+
+        article.updateArticle(updateArticleRequest);
     }
 }

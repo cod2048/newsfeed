@@ -1,4 +1,5 @@
-package com.hanghae.module_activity.article.dto.response;
+package com.hanghae.module_activity.article.dto.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @ToString
-public class ArticleResponse {
-    private Long id;
+public class UpdateArticleRequest {
+    private String title;
+    private String content;
 }
