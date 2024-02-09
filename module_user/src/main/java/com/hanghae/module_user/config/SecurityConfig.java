@@ -31,8 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/verification").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/internal/users/check").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/internal/users/find").permitAll()
 //                        .requestMatchers(HttpMethod.POST, "/api/refreshToken").permitAll()

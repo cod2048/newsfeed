@@ -36,7 +36,7 @@ public class UserController {
         return ResponseEntity.ok().body("send email successful");
     }
 
-    @PostMapping("/api/login")
+    @PostMapping("/api/users/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         LoginResponse loginResponse = userService.login(loginRequest);
 
@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.ok().body("Login successful");
     }
 
-    @PostMapping("/api/logout")
+    @PostMapping("/api/users/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         String token = authorizationHeader.substring(7);
