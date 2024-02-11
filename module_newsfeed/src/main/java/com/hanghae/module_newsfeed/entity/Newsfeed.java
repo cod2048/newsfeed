@@ -43,7 +43,6 @@ public class Newsfeed {
     public enum ActivityType {
         ARTICLE,
         COMMENT,
-        LIKE,
         FOLLOW,
         ARTICLE_LIKE,
         COMMENT_LIKE
